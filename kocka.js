@@ -23,7 +23,7 @@ parameters =
 
     };
     
-
+//Nefunguje zmena tvaru
 var typ = gui.add(parameters, 'tvar', ["Kocka", "Ihlan",]).name('Objekt');
 typ.onChange(function (geom) {
     if (geom === "Kocka") {
