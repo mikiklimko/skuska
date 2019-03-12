@@ -18,6 +18,7 @@ var speed = 0.1;
 		x: 1, y: 1, z: 1,
         color: "#ff0000", // color (change "#" to "0x")
         wireframe: true, 
+        poz1: 1 , poz2: 1 , poz3: 1,  
 		
 		
 	};
@@ -50,4 +51,12 @@ var speed = 0.1;
     ydimen.onChange(function (pohyb) { cube.scale.y = pohyb; });
     zdimen.onChange(function (pohyb) { cube.scale.z = pohyb; });
 
-   
+
+    var pos = gui.addFolder("Pozicia");
+    var xpos = pos.add (parameters, 'poz1').min(-10).max(20).step(speed).name('os-X');
+    var ypos = pos.add (parameters, 'poz2').min(-10).max(20).step(speed).name('os-Y');
+    var zpos = pos.add (parameters, 'poz3').min(-10).max(20).step(speed).name('os-Z');
+
+    xpos.onChange(function(pozicia){cube.position.x = pozicia});
+    ypos.onChange(function(pozicia){cube.position.y = pozicia});
+    zpos.onChange(function(pozicia){cube.position.z = pozicia});
