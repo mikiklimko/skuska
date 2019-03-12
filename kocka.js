@@ -13,7 +13,7 @@ var gui = new dat.GUI();
 var speed = 0.1;
 parameters =
     {
-        tvar: "Ihlan",
+        tvar: "Kocka",
         x: 1, y: 1, z: 1,
         color: "#ff0000", // color (change "#" to "0x")
         wireframe: true,
@@ -77,9 +77,10 @@ var obj = { restart:function(){
     cube.scale.x = 1 ;
     cube.scale.z = 1 ;
     cube.scale.y = 1 ;
-    cube.position.x = 1;
-    cube.position.y = 1;
-    cube.position.z = 1;
+    cube.position.x = 0;
+    cube.position.y = 0;
+    cube.position.z = 0;
+    
 
  }};
 
