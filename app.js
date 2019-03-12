@@ -1,3 +1,5 @@
+
+
 var camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 10 );
 	camera.position.z = 30;
 
@@ -15,18 +17,29 @@ var	renderer = new THREE.WebGLRenderer( { antialias: true } );
     var controls;
     controls = new THREE.OrbitControls( camera );
     
-     
+    var xro,zro,yro; 
 
+    function spin(varname, xaxis, yaxis, zaxis) {
 
+        var speed = 0.01;
+    
+        if (varname == true) {
+    
+            if (xaxis == true) { cube.rotation.x += speed; }
+            else if (yaxis == true) { cube.rotation.y += speed; }
+            else cube.rotation.z += speed;
+        }
+    }
 
 
 
 var animate = function () {
     requestAnimationFrame( animate );
-
-   
-
     renderer.render( scene, camera );
+
+    spin(xro, true, false, false);
+    spin(yro, false, true, false);
+    spin(zro, false, false, true);
 };
 
 animate();
