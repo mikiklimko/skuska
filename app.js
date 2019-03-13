@@ -1,6 +1,6 @@
 
 
-var camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 10 );
+var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.01, 1000 );
 	camera.position.z = 30;
 
 var	scene = new THREE.Scene();
@@ -15,7 +15,7 @@ var	renderer = new THREE.WebGLRenderer( { antialias: true } );
    
     
     var controls;
-    controls = new THREE.OrbitControls( camera );
+    controls = new THREE.OrbitControls( camera , renderer.domElement);
     
     var xro,zro,yro; 
 

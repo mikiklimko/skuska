@@ -1,4 +1,4 @@
-var geometry = new THREE.BoxGeometry(1, 1, 1);
+var geometry = new THREE.BoxGeometry(5, 5, 5);
 var material = new THREE.MeshBasicMaterial({
     color: "#ff0000",
     wireframe: true
@@ -6,13 +6,14 @@ var material = new THREE.MeshBasicMaterial({
 var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
-camera.position.z = 3;
+camera.position.z = 10;
 
 
 var gui = new dat.GUI();
 var speed = 0.1;
 parameters =
     {
+        a:"",
         tvar: "Kocka",
         x: 1, y: 1, z: 1,
         color: "#ff0000", // color (change "#" to "0x")
@@ -24,8 +25,13 @@ parameters =
     };
     
 //Nefunguje zmena tvaru
-var typ = gui.add(parameters, 'tvar', ["Kocka", "Ihlan",]).name('Objekt');
-typ.onChange(function (geom) {
+
+
+
+
+ var typ = gui.add(parameters, 'tvar', ["Kocka", "Ihlan", "Trojholnik"]).name('Objekt');
+
+ typ.onChange(function (geom) {
     if (geom === "Kocka") {
         cube.visible = true;
         cone.visible = false;
@@ -37,7 +43,7 @@ typ.onChange(function (geom) {
     console.log(geom)
 
 });
-
+ 
 
 
 var color = gui.addColor(parameters, 'color').name("Farba");
