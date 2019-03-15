@@ -30,7 +30,7 @@ var	renderer = new THREE.WebGLRenderer( { antialias: true } );
             else cube.rotation.z += speed;
         }
     }
-
+    
 
 
 var animate = function () {

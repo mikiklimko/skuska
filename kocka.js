@@ -29,16 +29,23 @@ parameters =
 
 
 
- var typ = gui.add(parameters, 'tvar', ["Kocka", "Ihlan", "Trojholnik"]).name('Objekt');
+ var typ = gui.add(parameters, 'tvar', ["Kocka", "Ihlan", "Valec"]).name('Objekt');
 
  typ.onChange(function (geom) {
     if (geom === "Kocka") {
         cube.visible = true;
         cone.visible = false;
+        cylinder.visible = false;
     }
     if (geom === "Ihlan") {
         cube.visible = false;
         cone.visible = true;
+        cylinder.visible = false;
+    }
+    if (geom === "Valec"){
+        cube.visible = false;
+        cone.visible = false;
+        cylinder.visible = true;
     }
     console.log(geom)
 
