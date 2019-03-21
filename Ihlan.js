@@ -53,24 +53,23 @@ var color = color.onChange(function (color) { cone.material.color.setHex(color.r
 
 
 
-xdimen.onChange(function (pohyb) { cone.scale.x = pohyb; });
-ydimen.onChange(function (pohyb) { cone.scale.y = pohyb; });
-zdimen.onChange(function (pohyb) { cone.scale.z = pohyb; });
+xdimen.onChange(function (pohyb1) { cone.scale.x = pohyb1; console.log(pohyb1)});
+ydimen.onChange(function (pohyb1) { cone.scale.y = pohyb1; });
+zdimen.onChange(function (pohyb1) { cone.scale.z = pohyb1; });
 
 
 
 
-xpos.onChange(function (pozicia) { cone.position.x = pozicia });
-ypos.onChange(function (pozicia) { cone.position.y = pozicia });
-zpos.onChange(function (pozicia) { cone.position.z = pozicia });
+xpos.onChange(function (pozicia1) { cone.position.x = pozicia1 });
+ypos.onChange(function (pozicia1) { cone.position.y = pozicia1 });
+zpos.onChange(function (pozicia1) { cone.position.z = pozicia1 });
 
 
 
 
-xanim.onChange(function (anim) { xro = anim; console.log(anim) } );
-yanim.onChange(function (anim) { yro = anim; });
-zanim.onChange(function (anim) { zro = anim; });
-
+xanim.onChange(function (anim1) { xro = anim1; });
+yanim.onChange(function (anim1) { yro = anim1; });
+zanim.onChange(function (anim1) { zro = anim1; });
 
 var obj = { restart:function(){ 
     camera.position.z = 3;

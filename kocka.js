@@ -61,7 +61,7 @@ var xdimen = dimen.add(parameters, 'x').min(1).max(20).step(speed).name('os-X');
 var ydimen = dimen.add(parameters, 'y').min(1).max(20).step(speed).name('os-Y');
 var zdimen = dimen.add(parameters, 'z').min(1).max(20).step(speed).name('os-Z');
 
-xdimen.onChange(function (pohyb) { cube.scale.x = pohyb; });
+xdimen.onChange(function (pohyb) { cube.scale.x = pohyb;console.log(pohyb) });
 ydimen.onChange(function (pohyb) { cube.scale.y = pohyb; });
 zdimen.onChange(function (pohyb) { cube.scale.z = pohyb; });
 
