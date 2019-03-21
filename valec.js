@@ -34,23 +34,23 @@ var color = color.onChange(function (color) { cylinder.material.color.setHex(col
 
 
 
-xdimen.onChange(function (pohyb) { cylinder.scale.x = pohyb; });
-ydimen.onChange(function (pohyb) { cylinder.scale.y = pohyb; });
-zdimen.onChange(function (pohyb) { cylinder.scale.z = pohyb; });
+xdimen.onChange(function (pohyb3) { cylinder.scale.x = pohyb3; });
+ydimen.onChange(function (pohyb3) { cylinder.scale.y = pohyb3; });
+zdimen.onChange(function (pohyb3) { cylinder.scale.z = pohyb3; });
 
 
 
 
-xpos.onChange(function (pozicia) { cylinder.position.x = pozicia });
-ypos.onChange(function (pozicia) { cylinder.position.y = pozicia });
-zpos.onChange(function (pozicia) { cylinder.position.z = pozicia });
+xpos.onChange(function (pozicia3) { cylinder.position.x = pozicia3 });
+ypos.onChange(function (pozicia3) { cylinder.position.y = pozicia3 });
+zpos.onChange(function (pozicia3) { cylinder.position.z = pozicia3 });
 
 
 
 
-xanim.onChange(function (anim) { xro = anim; console.log(anim) } );
-yanim.onChange(function (anim) { yro = anim; });
-zanim.onChange(function (anim) { zro = anim; });
+xanim.onChange(function (anim3) { xro = anim3; console.log(anim) } );
+yanim.onChange(function (anim3) { yro = anim3; });
+zanim.onChange(function (anim3) { zro = anim3; });
 
 var obj = { restart:function(){ 
     camera.position.z = 3;
