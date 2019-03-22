@@ -1,45 +1,190 @@
+// Hlavna trieda s implementaciou metod pre vizualizaciu
+class Viz {
+  parameters = {
+    a:"",
+    tvar: "Kocka",
+    x: 1, y: 1, z: 1,
+    color: "#ff0000",
+    wireframe: true,
+    poz1: 1, poz2: 1, poz3: 1,
+    ani1: false, ani2: false, ani3: false,
+    speed: 0.1
+  };
+
+  constructor() {
+    // Zakladne jadro programu, ktore nastavi prostredie
+    this.camera = new THREE.PerspectiveCamera(
+      60,
+      window.innerWidth / window.innerHeight,
+      0.01,
+      1000
+    );
+    // oddialenie kamery (aby bolo vidno objekty pred nou)
+    this.camera.position.z = 15;
+
+    this.scene = new THREE.Scene();
+
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+    this.renderer.setClearColor(0x000000, 1);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    document.body.appendChild(this.renderer.domElement);
+
+    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+
+    // Geometrie (na zaciatku neexistuju, ale implementujeme metody, ktore ich nastavia)
+    this.geometries = {
+      cube: null,
+      cone: null,
+      cylinder: null
+    };
+
+    // Kym nemame inicializovane ziadne geometrie, ziadna teda nemoze byt aktivna
+    this.activeGeometry = null
+
+    // inicializacia vsetkych geometrii
+    this.initCube();
+    this.initCone();
+    this.initCylinder();
+
+    // Na zaciatku bude aktivna kocka
+    this.setActive("Kocka");
+
+    // Inicializacia dat.gui
+    this.initGUI();
+  }
+
+  initGUI = () => {
+    this.gui = new dat.GUI();
+    this.typ = this.gui.add(this.parameters, 'tvar', ["Kocka", "Ihlan", "Valec"]).name('Objekt');
+    // Zmena parametru Objekt ("Kocka", "Ihlan" alebo "Valec") bude rovno
+    // zavolana ako atribut `geometryType` metodou this.setActive(geometryType)
+    this.typ.onChange(this.setActive);
+
+    this.color = this.gui.addColor(this.parameters, 'color').name("Farba");
+    this.color.onChange((color) => {
+      this.geometries[this.activeGeometry].material.color.setHex(color.replace("#", "0x"));
+    });
+
+    var dimen = this.gui.addFolder('Nastavenia');
+    var xdimen = dimen.add(this.parameters, 'x').min(1).max(20).step(0.1).name('os-X');
+    var ydimen = dimen.add(this.parameters, 'y').min(1).max(20).step(0.1).name('os-Y');
+    var zdimen = dimen.add(this.parameters, 'z').min(1).max(20).step(0.1).name('os-Z');
+
+    xdimen.onChange((pohyb) => { this.geometries[this.activeGeometry].scale.x = pohyb; console.log(pohyb) });
+    ydimen.onChange((pohyb) => { this.geometries[this.activeGeometry].scale.y = pohyb; });
+    zdimen.onChange((pohyb) => { this.geometries[this.activeGeometry].scale.z = pohyb; });
 
 
-var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.01, 1000 );
-	camera.position.z = 30;
+    var pos = this.gui.addFolder("Pozicia");
+    var xpos = pos.add(this.parameters, 'poz1').min(-10).max(20).step(0.1).name('os-X');
+    var ypos = pos.add(this.parameters, 'poz2').min(-10).max(20).step(0.1).name('os-Y');
+    var zpos = pos.add(this.parameters, 'poz3').min(-10).max(20).step(0.1).name('os-Z');
 
-var	scene = new THREE.Scene();
+    xpos.onChange((pozicia) => { this.geometries[this.activeGeometry].position.x = pozicia });
+    ypos.onChange((pozicia) => { this.geometries[this.activeGeometry].position.y = pozicia });
+    zpos.onChange((pozicia) => { this.geometries[this.activeGeometry].position.z = pozicia });
 
+    this.speed = this.gui.add(this.parameters, 'speed').min(0).max(5).step(0.1).name('Rychlost animacie');
 
-var	renderer = new THREE.WebGLRenderer( { antialias: true } );
-	renderer.setSize( window.innerWidth, window.innerHeight );
+    var restartOptions = {
+      restart: () => {
+        this.camera.position.z = 15;
 
-    renderer.setClearColor( 0x000000, 1 );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    document.body.appendChild( renderer.domElement );
-   
-    
-    var controls;
-    controls = new THREE.OrbitControls( camera , renderer.domElement);
-    
-    var xro,zro,yro; 
+        // nastav vsetkym geometriam zakladne nastavenia (zresetuj)
+        Object.entries(this.geometries).forEach(function(geom) {
+          geom.scale.x = 1 ;
+          geom.scale.z = 1 ;
+          geom.scale.y = 1 ;
+          geom.position.x = 0;
+          geom.position.y = 0;
+          geom.position.z = 0;
+        })
+      }
+    };
 
-    function spin(varname, xaxis, yaxis, zaxis) {
+    this.gui.add(restartOptions,'restart');
 
-        var speed = 0.01;
-    
-        if (varname == true) {
-    
-            if (xaxis == true) { cube.rotation.x += speed; }
-            else if (yaxis == true) { cube.rotation.y += speed; }
-            else cube.rotation.z += speed;
-        }
+    this.gui.open();
+  }
+
+  initCube = () => {
+    var geometry = new THREE.BoxGeometry(5, 5, 5);
+    var material = new THREE.MeshBasicMaterial({
+        color: "#ff0000",
+        wireframe: true
+    });
+
+    this.geometries.cube = new THREE.Mesh(geometry, material);
+    this.scene.add(this.geometries.cube);
+  }
+
+  initCone = () => {
+    var geometry = new THREE.ConeGeometry(2.5, 10, 16);
+    var material = new THREE.MeshBasicMaterial({
+      color: "red",
+      wireframe: true
+    });
+
+    this.geometries.cone = new THREE.Mesh(geometry, material);
+    this.scene.add(this.geometries.cone);
+  }
+
+  initCylinder = () => {
+    var geometry = new THREE.CylinderGeometry(2.5, 2.5, 10, 16);
+    var material = new THREE.MeshBasicMaterial({
+      color: "red",
+      wireframe: true
+    });
+
+    this.geometries.cylinder = new THREE.Mesh(geometry, material);
+    this.scene.add(this.geometries.cylinder);
+  }
+
+  setActive = (geometryType) => {
+    switch (geometryType) {
+      case "Ihlan":
+        this.geometries.cube.visible = false;
+        this.geometries.cone.visible = true;
+        this.geometries.cylinder.visible = false;
+        this.activeGeometry = "cone";
+        break;
+      case "Valec":
+        this.geometries.cube.visible = false;
+        this.geometries.cone.visible = false;
+        this.geometries.cylinder.visible = true;
+        this.activeGeometry = "cylinder";
+        break;
+      default:
+        this.geometries.cube.visible = true;
+        this.geometries.cone.visible = false;
+        this.geometries.cylinder.visible = false;
+        this.activeGeometry = "cube";
+        break;
     }
-    
+  }
 
+  spin = (varname, xaxis, yaxis, zaxis) => {
+    var speed = 0.01;
 
-var animate = function () {
-    requestAnimationFrame( animate );
-    renderer.render( scene, camera );
+    if (varname == true) {
+      if (xaxis == true) {
+        this.geometries[this.activeGeometry].rotation.x += speed;
+      } else if (yaxis == true) {
+        this.geometries[this.activeGeometry].rotation.y += speed;
+      } else this.geometries[this.activeGeometry].rotation.z += speed;
+    }
+  }
+}
 
-    spin(xro, true, false, false);
-    spin(yro, false, true, false);
-    spin(zro, false, false, true);
+// Inicializacia hlavnej triedy s vizualizaciou - drzi si
+// vsetky geometrie v sebe a implementuje metody
+var viz = new Viz();
+
+var animate = function() {
+  requestAnimationFrame(animate);
+  viz.renderer.render(viz.scene, viz.camera);
 };
 
 animate();
