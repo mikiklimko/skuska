@@ -11,7 +11,10 @@ class Viz {
     speed: 0.1
   };
 
-  constructor() {
+  
+  
+constructor() {
+     
     // Zakladne jadro programu, ktore nastavi prostredie
     this.camera = new THREE.PerspectiveCamera(
       60,
@@ -23,6 +26,9 @@ class Viz {
     this.camera.position.z = 15;
 
     this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color( 0x505050 );
+
+    
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
