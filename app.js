@@ -24,7 +24,6 @@ constructor() {
     );
     // oddialenie kamery (aby bolo vidno objekty pred nou)
     this.camera.position.z = 15;
-
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color( 0x505050 );
 
@@ -35,17 +34,16 @@ constructor() {
 
     this.renderer.setClearColor(0x000000, 1);
     this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.vr.enabled = true;
+
     document.body.appendChild(this.renderer.domElement);
-      
+
     this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-    this.setDollyIn = function(dollyScale){
-      dollyIn(dollyScale)
-    }
-    this.setDollyOut = function(dollyScale){
-      dollyIn(dollyScale)
-    }
-    document.body.appendChild( WEBVR.createButton( this.renderer, this.enabled) );
-    //this.renderer.vr.enabled = true;
+    
+
+    document.body.appendChild( WEBVR.createButton( this.renderer) );
+    
+
 
 
     // Geometrie (na zaciatku neexistuju, ale implementujeme metody, ktore ich nastavia)
@@ -73,6 +71,7 @@ constructor() {
     // Inicializacia dat.gui
     this.initGUI();
   }
+
 
   initGUI = () => {
     this.gui = new dat.GUI();
