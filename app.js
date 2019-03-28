@@ -34,15 +34,26 @@ constructor() {
 
     this.renderer.setClearColor(0x000000, 1);
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.vr.enabled = true;
-
+    
+    
+    
     document.body.appendChild(this.renderer.domElement);
 
     this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
     
 
     document.body.appendChild( WEBVR.createButton( this.renderer) );
+    this.renderer.vr.enabled = true;
+
+    var room;
+    room = new THREE.LineSegments(
+      new THREE.BoxLineGeometry( 6, 6, 6, 10, 10, 10 ),
+      new THREE.LineBasicMaterial( { color: 0x808080 } )
+    );
+    room.geometry.translate( 0, 3, 0 );
+    this.scene.add( room );
     
+
 
 
 
