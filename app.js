@@ -13,7 +13,8 @@ let parameters = {
   ani1: false,
   ani2: false,
   ani3: false,
-  speed: 0.1
+  speed: 0.001,
+  xro: false
 };
 class Viz {
   constructor() {
@@ -24,6 +25,7 @@ class Viz {
     this.initIco = this.initIco.bind(this);
     this.initGUI = this.initGUI.bind(this);
     this.setActive = this.setActive.bind(this);
+    this.spin = this.spin.bind(this);
 
     // Zakladne jadro programu, ktore nastavi prostredie
     this.camera = new THREE.PerspectiveCamera(
@@ -179,11 +181,26 @@ class Viz {
       this.geometries[this.activeGeometry].position.z = pozicia;
     });
 
+    var anim = this.gui.addFolder("Animacia");
+    var xanim = anim.add(parameters, "ani1").name("os-X");
+    var yanim = anim.add(parameters, "ani2").name("os-Y");
+    var zanim = anim.add(parameters, "ani3").name("os-Z");
+
+    xanim.onChange(function(anim) {
+      parameters.ani1 = anim;
+    });
+    yanim.onChange(function(anim) {
+      parameters.ani2 = anim;
+    });
+    zanim.onChange(function(anim) {
+      parameters.ani3 = anim;
+    });
+
     this.speed = this.gui
       .add(parameters, "speed")
       .min(0)
-      .max(5)
-      .step(0.1)
+      .max(0.1)
+      .step(0.001)
       .name("Rychlost animacie");
 
     var restartOptions = {
@@ -305,17 +322,14 @@ class Viz {
     }
   }
 
-  // spin = (varname, xaxis, yaxis, zaxis) => {
-  //   var speed = 0.01;
+  spin(isAnimating, axis) {
+    var speed = parameters.speed;
+    if (typeof axis !== "string") return;
 
-  //   if (varname == true) {
-  //     if (xaxis == true) {
-  //       this.geometries[this.activeGeometry].rotation.x += speed;
-  //     } else if (yaxis == true) {
-  //       this.geometries[this.activeGeometry].rotation.y += speed;
-  //     } else this.geometries[this.activeGeometry].rotation.z += speed;
-  //   }
-  // }
+    if (isAnimating) {
+      this.geometries[this.activeGeometry].rotation[axis] += speed;
+    }
+  }
 }
 
 // Inicializacia hlavnej triedy s vizualizaciou - drzi si
@@ -326,6 +340,10 @@ var animate = function() {
   requestAnimationFrame(animate);
   viz.controls.update();
   viz.renderer.render(viz.scene, viz.camera);
+
+  viz.spin(parameters.ani1, "x");
+  viz.spin(parameters.ani2, "y");
+  viz.spin(parameters.ani3, "z");
 };
 
 animate();
