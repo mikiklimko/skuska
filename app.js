@@ -37,7 +37,7 @@ class Viz {
     this.camera.position.y = 1.5;
     this.camera.rotation.x = 0;
     // this.camera.updateProjectionMatrix()
-    this.camera.up = new THREE.Vector3(0, 0, 0);
+    // this.camera.up = new THREE.Vector3(0, 0, 0);
     console.log(this.camera);
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x505050);
