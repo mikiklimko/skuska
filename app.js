@@ -34,10 +34,10 @@ class Viz {
     );
     // oddialenie kamery (aby bolo vidno objekty pred nou)
     this.camera.position.z = 15;
-    // this.camera.position.y = 1.5;
+    this.camera.position.y = 1.5;
     this.camera.rotation.x = 0;
     // this.camera.updateProjectionMatrix()
-    // this.camera.up = new THREE.Vector3(0, 0, 0);
+    this.camera.up = new THREE.Vector3(0, 0, 0);
     console.log(this.camera);
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x505050);
@@ -59,8 +59,8 @@ class Viz {
     this.controls.enableDamping = true;
     this.controls.rotateSpeed = -0.25;
 
-    document.body.appendChild(WEBVR.createButton(this.renderer));
-    this.renderer.vr.enabled = false;
+    document.body.appendChild(WEBVR.createButton(this.camera, this.renderer));
+    // this.renderer.vr.enabled = false;
 
     var room;
     room = new THREE.LineSegments(
