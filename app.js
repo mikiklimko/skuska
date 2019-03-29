@@ -113,6 +113,13 @@ class Viz {
     // zavolana ako atribut `geometryType` metodou this.setActive(geometryType)
     this.typ.onChange(this.setActive);
 
+    this.wireframe = this.gui.add(parameters, "wireframe").name("Wireframe");
+    this.wireframe.onChange(checked => {
+      Object.values(this.geometries).forEach(function(geom) {
+        geom.material.wireframe = checked
+      })
+    });
+
     this.color = this.gui.addColor(parameters, "color").name("Farba");
     this.color.onChange(color => {
       this.geometries[this.activeGeometry].material.color.setHex(
