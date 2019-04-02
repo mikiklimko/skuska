@@ -17,6 +17,8 @@ let parameters = {
   xro: false,
   opacity: 0.8
 };
+
+
 class Viz {
   constructor() {
     // () => aby parameter odkazoval na class 
@@ -64,9 +66,7 @@ class Viz {
     this.controls.rotateSpeed = -0.25;
 
     document.body.appendChild(WEBVR.createButton(this.camera, this.renderer));
-    // this.renderer.vr.enabled = false;
-
-   
+    // this.renderer.vr.enabled = false;   
 
     var room;
     room = new THREE.LineSegments(
@@ -124,13 +124,10 @@ class Viz {
       })
     });
     
-    this.opacity = this.gui.add (parameters, "opacity").name("Priehladnost").min(0).max(1).step(0.1);
+    this.opacity = this.gui.add (parameters,"opacity").name("Priehladnost").min(0).max(1).step(0.1);
     this.opacity.onChange (opacity =>{
       this.geometries[this.activeGeometry].material.opacity = opacity;
-     
-      
-      console.log(material.opacity);
-      console.log(opacity);
+    
     });
 
     this.color = this.gui.addColor(parameters, "color").name("Farba");
@@ -244,11 +241,15 @@ class Viz {
     this.gui.open();
   }
 
+  
   initCube() {
     var geometry = new THREE.BoxGeometry(5, 5, 5);
     var material = new THREE.MeshBasicMaterial({
       color: "#ff0000",
-      wireframe: true
+      wireframe: true,
+      transparent: true,
+      
+
     });
 
     this.geometries.cube = new THREE.Mesh(geometry, material);
@@ -259,7 +260,9 @@ class Viz {
     var geometry = new THREE.ConeGeometry(2.5, 10, 16);
     var material = new THREE.MeshBasicMaterial({
       color: "red",
-      wireframe: true
+      wireframe: true,
+      transparent: true
+
     });
 
     this.geometries.cone = new THREE.Mesh(geometry, material);
@@ -270,7 +273,9 @@ class Viz {
     var geometry = new THREE.CylinderGeometry(2.5, 2.5, 10, 16);
     var material = new THREE.MeshBasicMaterial({
       color: "red",
-      wireframe: true
+      wireframe: true,
+      transparent: true
+
     });
 
     this.geometries.cylinder = new THREE.Mesh(geometry, material);
@@ -280,7 +285,9 @@ class Viz {
     var geometry = new THREE.OctahedronGeometry(3, 0);
     var material = new THREE.MeshBasicMaterial({
       color: "red",
-      wireframe: true
+      wireframe: true,
+      transparent: true
+
     });
 
     this.geometries.octahedron = new THREE.Mesh(geometry, material);
@@ -290,7 +297,9 @@ class Viz {
     var geometry = new THREE.IcosahedronGeometry(3, 1);
     var material = new THREE.MeshBasicMaterial({
       color: "red",
-      wireframe: true
+      wireframe: true,
+      transparent: true
+
     });
 
     this.geometries.ico = new THREE.Mesh(geometry, material);
