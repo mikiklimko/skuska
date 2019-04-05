@@ -20,7 +20,7 @@ var WEBVR = {
       button.style.left = "calc(50% - 50px)";
       button.style.width = "100px";
 
-      button.textContent = "ENABLE VR SUPPORT";
+      button.textContent = "POVOLIT PODPORU VR";
       button.style.position = "absolute";
       button.style.top = "0";
 
@@ -28,7 +28,7 @@ var WEBVR = {
         this.isEnabled = !this.isEnabled;
         if (this.isEnabled) {
           renderer.vr.enabled = true;
-          button.textContent = "DISABLE VR SUPPORT";
+          button.textContent = "NEPOVOLIT PODPORU VR";
         } else {
           renderer.vr.enabled = false;
           renderer.setSize(window.innerWidth, window.innerHeight);
@@ -37,7 +37,7 @@ var WEBVR = {
           camera.position.z = 15;
           camera.position.y = 1.5;
           camera.rotation.x = 0;
-          button.textContent = "ENABLE VR SUPPORT";
+          button.textContent = "POVOLIT PODPORU VR";
         }
       };
       var body = document.getElementById("main");
