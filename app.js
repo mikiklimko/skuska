@@ -15,7 +15,7 @@ let parameters = {
   ani3: false,
   speed: 0.001,
   xro: false,
-  opacity: 0.8
+  opacity: 1
 };
 
 
@@ -27,6 +27,8 @@ class Viz {
     this.initCylinder = this.initCylinder.bind(this);
     this.initOctahedron = this.initOctahedron.bind(this);
     this.initIco = this.initIco.bind(this);
+    this.initTetra = this.initTetra.bind(this);
+    this.initPoly = this.initPoly.bind(this);
     this.initGUI = this.initGUI.bind(this);
     this.setActive = this.setActive.bind(this);
     this.spin = this.spin.bind(this);
@@ -67,7 +69,7 @@ class Viz {
 
     document.body.appendChild(WEBVR.createButton(this.camera, this.renderer));
     // this.renderer.vr.enabled = false;   
-
+      
     var room;
     room = new THREE.LineSegments(
       new THREE.BoxLineGeometry(40, 40, 40, 10, 10, 10),
@@ -82,7 +84,9 @@ class Viz {
       cone: null,
       cylinder: null,
       octahedron: null,
-      ico: null
+      ico: null,
+      tetra: null,
+      poly: null,
     };
 
     // Kym nemame inicializovane ziadne geometrie, ziadna teda nemoze byt aktivna
@@ -94,6 +98,8 @@ class Viz {
     this.initCylinder();
     this.initOctahedron();
     this.initIco();
+    this.initTetra();
+    this.initPoly();
 
     // Na zaciatku bude aktivna kocka
     this.setActive("Kocka");
@@ -109,8 +115,11 @@ class Viz {
         "Kocka",
         "Ihlan",
         "Valec",
+        "Tetrahedron",
+        "Polyhedron",
         "Octahedron",
-        "Icoshedron"
+        "Icoshedron",
+        
       ])
       .name("Objekt");
     // Zmena parametru Objekt ("Kocka", "Ihlan" alebo "Valec") bude rovno
@@ -244,13 +253,17 @@ class Viz {
   
   initCube() {
     var geometry = new THREE.BoxGeometry(5, 5, 5);
+   /*  this.geometries.cube = new THREE.Mesh(geometry, material);
+    this.geometries.wire = new THREE.WireframeHelper(this.geometries.cube, "black" );
+    this.scene.add(this.geometries.cube,this.geometries.wire); */
     var material = new THREE.MeshBasicMaterial({
       color: "#ff0000",
       wireframe: true,
       transparent: true,
-      
+     
 
     });
+    
 
     this.geometries.cube = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.cube);
@@ -294,7 +307,7 @@ class Viz {
     this.scene.add(this.geometries.octahedron);
   }
   initIco() {
-    var geometry = new THREE.IcosahedronGeometry(3, 1);
+    var geometry = new THREE.IcosahedronGeometry(6, 0);
     var material = new THREE.MeshBasicMaterial({
       color: "red",
       wireframe: true,
@@ -306,9 +319,54 @@ class Viz {
     this.scene.add(this.geometries.ico);
   }
 
+  
+  initTetra(){
+    var geometry = new THREE.TetrahedronGeometry(6,0);
+    var material = new THREE.MeshBasicMaterial({
+      color: "red",
+      wireframe: true,
+      transparent: true
+
+    });
+
+    this.geometries.tetra = new THREE.Mesh(geometry, material);
+    this.scene.add(this.geometries.tetra);
+
+  };
+
+  initPoly(){
+    var verticesOfCube = [
+      -1,-1,-1,    1,-1,-1,    1, 1,-1,    -1, 1,-1,
+      -1,-1, 1,    1,-1, 1,    1, 1, 1,    -1, 1, 1,
+  ];
+  
+  var indicesOfFaces = [
+      2,1,0,    0,3,2,
+      0,4,7,    7,3,0,
+      0,1,5,    5,4,0,
+      1,2,6,    6,5,1,
+      2,3,7,    7,6,2,
+      4,5,6,    6,7,4
+  ];
+  
+    var geometry = new THREE.PolyhedronGeometry(verticesOfCube, indicesOfFaces, 6, 2 );
+    var material = new THREE.MeshBasicMaterial({
+      color: "red",
+      wireframe: true,
+      transparent: true
+
+    });
+
+    this.geometries.poly = new THREE.Mesh(geometry, material);
+    this.scene.add(this.geometries.poly);
+  };
+
+
   setActive(geometryType) {
     switch (geometryType) {
       case "Ihlan":
+      this.geometries.poly.visible = false;
+      this.geometries.tetra.visible = false; 
         this.geometries.ico.visible = false;
         this.geometries.octahedron.visible = false;
         this.geometries.cube.visible = false;
@@ -317,6 +375,8 @@ class Viz {
         this.activeGeometry = "cone";
         break;
       case "Valec":
+      this.geometries.poly.visible = false;
+      this.geometries.tetra.visible = false; 
         this.geometries.ico.visible = false;
         this.geometries.octahedron.visible = false;
         this.geometries.cube.visible = false;
@@ -325,6 +385,8 @@ class Viz {
         this.activeGeometry = "cylinder";
         break;
       case "Octahedron":
+      this.geometries.poly.visible = false;
+      this.geometries.tetra.visible = false; 
         this.geometries.ico.visible = false;
         this.geometries.octahedron.visible = true;
         this.geometries.cube.visible = false;
@@ -333,6 +395,8 @@ class Viz {
         this.activeGeometry = "octahedron";
         break;
       case "Icoshedron":
+      this.geometries.poly.visible = false;
+      this.geometries.tetra.visible = false; 
         this.geometries.ico.visible = true;
         this.geometries.octahedron.visible = false;
         this.geometries.cube.visible = false;
@@ -340,7 +404,29 @@ class Viz {
         this.geometries.cylinder.visible = false;
         this.activeGeometry = "ico";
         break;
+      case "Tetrahedron" :
+      this.geometries.poly.visible = false;
+      this.geometries.tetra.visible = true; 
+      this.geometries.ico.visible = false;
+        this.geometries.octahedron.visible = false;
+        this.geometries.cube.visible = false;
+        this.geometries.cone.visible = false;
+        this.geometries.cylinder.visible = false;
+        this.activeGeometry = "tetra";
+      break;
+      case "Polyhedron":
+      this.geometries.poly.visible = true;
+      this.geometries.tetra.visible = false; 
+      this.geometries.ico.visible = false;
+        this.geometries.octahedron.visible = false;
+        this.geometries.cube.visible = false;
+        this.geometries.cone.visible = false;
+        this.geometries.cylinder.visible = false;
+        this.activeGeometry = "poly";
+      break;
       default:
+      this.geometries.poly.visible = false;
+        this.geometries.tetra.visible = false; 
         this.geometries.ico.visible = false;
         this.geometries.octahedron.visible = false;
         this.geometries.cube.visible = true;
