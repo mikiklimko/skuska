@@ -18,10 +18,9 @@ let parameters = {
   opacity: 1
 };
 
-
 class Viz {
   constructor() {
-    // () => aby parameter odkazoval na class 
+    // () => aby parameter odkazoval na class
     this.initCube = this.initCube.bind(this);
     this.initCone = this.initCone.bind(this);
     this.initCylinder = this.initCylinder.bind(this);
@@ -46,7 +45,7 @@ class Viz {
     this.camera.rotation.x = 0;
     // this.camera.updateProjectionMatrix()
     // this.camera.up = new THREE.Vector3(0, 0, 0);
-    
+
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x505050);
 
@@ -68,8 +67,8 @@ class Viz {
     this.controls.rotateSpeed = -0.25;
 
     document.body.appendChild(WEBVR.createButton(this.camera, this.renderer));
-    // this.renderer.vr.enabled = false;   
-      
+    // this.renderer.vr.enabled = false;
+
     var room;
     room = new THREE.LineSegments(
       new THREE.BoxLineGeometry(40, 40, 40, 10, 10, 10),
@@ -86,11 +85,28 @@ class Viz {
       octahedron: null,
       ico: null,
       tetra: null,
-      poly: null,
+      poly: null
     };
 
     // Kym nemame inicializovane ziadne geometrie, ziadna teda nemoze byt aktivna
     this.activeGeometry = null;
+
+    // Svetla
+    var ambientLight = new THREE.AmbientLight(0x000000);
+    this.scene.add(ambientLight);
+
+    var lights = [];
+    lights[0] = new THREE.PointLight(0xffffff, 1, 0);
+    lights[1] = new THREE.PointLight(0xffffff, 1, 0);
+    lights[2] = new THREE.PointLight(0xffffff, 1, 0);
+
+    lights[0].position.set(0, 200, 0);
+    lights[1].position.set(100, 200, 100);
+    lights[2].position.set(-100, -200, -100);
+
+    this.scene.add(lights[0]);
+    this.scene.add(lights[1]);
+    this.scene.add(lights[2]);
 
     // inicializacia vsetkych geometrii
     this.initCube();
@@ -118,8 +134,7 @@ class Viz {
         "Tetrahedron",
         "Polyhedron",
         "Octahedron",
-        "Icoshedron",
-        
+        "Icoshedron"
       ])
       .name("Objekt");
     // Zmena parametru Objekt ("Kocka", "Ihlan" alebo "Valec") bude rovno
@@ -129,14 +144,18 @@ class Viz {
     this.wireframe = this.gui.add(parameters, "wireframe").name("Wireframe");
     this.wireframe.onChange(checked => {
       Object.values(this.geometries).forEach(function(geom) {
-        geom.material.wireframe = checked
-      })
+        geom.material.wireframe = checked;
+      });
     });
-    
-    this.opacity = this.gui.add (parameters,"opacity").name("Priehladnost").min(0).max(1).step(0.1);
-    this.opacity.onChange (opacity =>{
+
+    this.opacity = this.gui
+      .add(parameters, "opacity")
+      .name("Priehladnost")
+      .min(0)
+      .max(1)
+      .step(0.1);
+    this.opacity.onChange(opacity => {
       this.geometries[this.activeGeometry].material.opacity = opacity;
-    
     });
 
     this.color = this.gui.addColor(parameters, "color").name("Farba");
@@ -250,32 +269,24 @@ class Viz {
     this.gui.open();
   }
 
-  
   initCube() {
-    var geometry = new THREE.BoxGeometry(5, 5, 5);
-   /*  this.geometries.cube = new THREE.Mesh(geometry, material);
-    this.geometries.wire = new THREE.WireframeHelper(this.geometries.cube, "black" );
-    this.scene.add(this.geometries.cube,this.geometries.wire); */
-    var material = new THREE.MeshBasicMaterial({
+    var geometry = new THREE.BoxBufferGeometry(5, 5, 5);
+    var material = new THREE.MeshPhongMaterial({
       color: "#ff0000",
       wireframe: true,
-      transparent: true,
-     
-
+      transparent: true
     });
-    
 
     this.geometries.cube = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.cube);
   }
 
   initCone() {
-    var geometry = new THREE.ConeGeometry(2.5, 10, 16);
-    var material = new THREE.MeshBasicMaterial({
+    var geometry = new THREE.ConeBufferGeometry(2.5, 10, 16);
+    var material = new THREE.MeshPhongMaterial({
       color: "red",
       wireframe: true,
       transparent: true
-
     });
 
     this.geometries.cone = new THREE.Mesh(geometry, material);
@@ -283,90 +294,139 @@ class Viz {
   }
 
   initCylinder() {
-    var geometry = new THREE.CylinderGeometry(2.5, 2.5, 10, 16);
-    var material = new THREE.MeshBasicMaterial({
+    var geometry = new THREE.CylinderBufferGeometry(2.5, 2.5, 10, 16);
+    var material = new THREE.MeshPhongMaterial({
       color: "red",
       wireframe: true,
       transparent: true
-
     });
 
     this.geometries.cylinder = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.cylinder);
   }
   initOctahedron() {
-    var geometry = new THREE.OctahedronGeometry(3, 0);
-    var material = new THREE.MeshBasicMaterial({
+    var geometry = new THREE.OctahedronBufferGeometry(3, 0);
+    var material = new THREE.MeshPhongMaterial({
       color: "red",
       wireframe: true,
       transparent: true
-
     });
 
     this.geometries.octahedron = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.octahedron);
   }
   initIco() {
-    var geometry = new THREE.IcosahedronGeometry(6, 0);
-    var material = new THREE.MeshBasicMaterial({
+    var geometry = new THREE.IcosahedronBufferGeometry(6, 0);
+    var material = new THREE.MeshPhongMaterial({
       color: "red",
       wireframe: true,
       transparent: true
-
     });
 
     this.geometries.ico = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.ico);
   }
 
-  
-  initTetra(){
-    var geometry = new THREE.TetrahedronGeometry(6,0);
-    var material = new THREE.MeshBasicMaterial({
+  initTetra() {
+    var geometry = new THREE.TetrahedronBufferGeometry(6, 0);
+    var material = new THREE.MeshPhongMaterial({
       color: "red",
       wireframe: true,
       transparent: true
-
     });
 
     this.geometries.tetra = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.tetra);
+  }
 
-  };
-
-  initPoly(){
+  initPoly() {
     var verticesOfCube = [
-      -1,-1,-1,    1,-1,-1,    1, 1,-1,    -1, 1,-1,
-      -1,-1, 1,    1,-1, 1,    1, 1, 1,    -1, 1, 1,
-  ];
-  
-  var indicesOfFaces = [
-      2,1,0,    0,3,2,
-      0,4,7,    7,3,0,
-      0,1,5,    5,4,0,
-      1,2,6,    6,5,1,
-      2,3,7,    7,6,2,
-      4,5,6,    6,7,4
-  ];
-  
-    var geometry = new THREE.PolyhedronGeometry(verticesOfCube, indicesOfFaces, 6, 2 );
-    var material = new THREE.MeshBasicMaterial({
+      -1,
+      -1,
+      -1,
+      1,
+      -1,
+      -1,
+      1,
+      1,
+      -1,
+      -1,
+      1,
+      -1,
+      -1,
+      -1,
+      1,
+      1,
+      -1,
+      1,
+      1,
+      1,
+      1,
+      -1,
+      1,
+      1
+    ];
+
+    var indicesOfFaces = [
+      2,
+      1,
+      0,
+      0,
+      3,
+      2,
+      0,
+      4,
+      7,
+      7,
+      3,
+      0,
+      0,
+      1,
+      5,
+      5,
+      4,
+      0,
+      1,
+      2,
+      6,
+      6,
+      5,
+      1,
+      2,
+      3,
+      7,
+      7,
+      6,
+      2,
+      4,
+      5,
+      6,
+      6,
+      7,
+      4
+    ];
+
+    var geometry = new THREE.PolyhedronBufferGeometry(
+      verticesOfCube,
+      indicesOfFaces,
+      6,
+      2
+    );
+    var material = new THREE.MeshPhongMaterial({
       color: "red",
       wireframe: true,
       transparent: true
-
     });
 
     this.geometries.poly = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.poly);
-  };
-
+  }
 
   setActive(geometryType) {
     switch (geometryType) {
       case "Ihlan":
-      this.geometries.poly.visible = false;
-      this.geometries.tetra.visible = false; 
+        this.geometries.poly.visible = false;
+        this.geometries.tetra.visible = false;
         this.geometries.ico.visible = false;
         this.geometries.octahedron.visible = false;
         this.geometries.cube.visible = false;
@@ -375,8 +435,8 @@ class Viz {
         this.activeGeometry = "cone";
         break;
       case "Valec":
-      this.geometries.poly.visible = false;
-      this.geometries.tetra.visible = false; 
+        this.geometries.poly.visible = false;
+        this.geometries.tetra.visible = false;
         this.geometries.ico.visible = false;
         this.geometries.octahedron.visible = false;
         this.geometries.cube.visible = false;
@@ -385,8 +445,8 @@ class Viz {
         this.activeGeometry = "cylinder";
         break;
       case "Octahedron":
-      this.geometries.poly.visible = false;
-      this.geometries.tetra.visible = false; 
+        this.geometries.poly.visible = false;
+        this.geometries.tetra.visible = false;
         this.geometries.ico.visible = false;
         this.geometries.octahedron.visible = true;
         this.geometries.cube.visible = false;
@@ -395,8 +455,8 @@ class Viz {
         this.activeGeometry = "octahedron";
         break;
       case "Icoshedron":
-      this.geometries.poly.visible = false;
-      this.geometries.tetra.visible = false; 
+        this.geometries.poly.visible = false;
+        this.geometries.tetra.visible = false;
         this.geometries.ico.visible = true;
         this.geometries.octahedron.visible = false;
         this.geometries.cube.visible = false;
@@ -404,29 +464,29 @@ class Viz {
         this.geometries.cylinder.visible = false;
         this.activeGeometry = "ico";
         break;
-      case "Tetrahedron" :
-      this.geometries.poly.visible = false;
-      this.geometries.tetra.visible = true; 
-      this.geometries.ico.visible = false;
+      case "Tetrahedron":
+        this.geometries.poly.visible = false;
+        this.geometries.tetra.visible = true;
+        this.geometries.ico.visible = false;
         this.geometries.octahedron.visible = false;
         this.geometries.cube.visible = false;
         this.geometries.cone.visible = false;
         this.geometries.cylinder.visible = false;
         this.activeGeometry = "tetra";
-      break;
+        break;
       case "Polyhedron":
-      this.geometries.poly.visible = true;
-      this.geometries.tetra.visible = false; 
-      this.geometries.ico.visible = false;
+        this.geometries.poly.visible = true;
+        this.geometries.tetra.visible = false;
+        this.geometries.ico.visible = false;
         this.geometries.octahedron.visible = false;
         this.geometries.cube.visible = false;
         this.geometries.cone.visible = false;
         this.geometries.cylinder.visible = false;
         this.activeGeometry = "poly";
-      break;
+        break;
       default:
-      this.geometries.poly.visible = false;
-        this.geometries.tetra.visible = false; 
+        this.geometries.poly.visible = false;
+        this.geometries.tetra.visible = false;
         this.geometries.ico.visible = false;
         this.geometries.octahedron.visible = false;
         this.geometries.cube.visible = true;
@@ -454,7 +514,7 @@ var viz = new Viz();
 var animate = function() {
   requestAnimationFrame(animate);
   viz.controls.update();
-  
+
   viz.renderer.render(viz.scene, viz.camera);
 
   viz.spin(parameters.ani1, "x");
