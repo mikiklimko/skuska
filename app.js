@@ -164,12 +164,15 @@ class Viz {
 
     xdimen.onChange(pohyb => {
       this.geometries[this.activeGeometry].scale.x = pohyb;
+      this.geometries[this.activeGeometry].line.scale.x = pohyb;
     });
     ydimen.onChange(pohyb => {
       this.geometries[this.activeGeometry].scale.y = pohyb;
+      this.geometries[this.activeGeometry].line.scale.y = pohyb;
     });
     zdimen.onChange(pohyb => {
       this.geometries[this.activeGeometry].scale.z = pohyb;
+      this.geometries[this.activeGeometry].line.scale.z = pohyb;
     });
 
     var pos = this.gui.addFolder("Pozicia");
@@ -194,12 +197,15 @@ class Viz {
 
     xpos.onChange(pozicia => {
       this.geometries[this.activeGeometry].position.x = pozicia;
+      this.geometries[this.activeGeometry].line.position.x = pozicia;
     });
     ypos.onChange(pozicia => {
       this.geometries[this.activeGeometry].position.y = pozicia;
+      this.geometries[this.activeGeometry].line.position.y = pozicia;
     });
     zpos.onChange(pozicia => {
       this.geometries[this.activeGeometry].position.z = pozicia;
+      this.geometries[this.activeGeometry].line.position.z = pozicia;
     });
 
     var anim = this.gui.addFolder("Animacia");
@@ -229,13 +235,14 @@ class Viz {
         this.camera.position.z = 15;
 
         // nastav vsetkym geometriam zakladne nastavenia (zresetuj)
-        Object.entries(this.geometries).forEach(function(geom) {
-          geom.scale.x = 1;
-          geom.scale.z = 1;
-          geom.scale.y = 1;
-          geom.position.x = 0;
-          geom.position.y = 0;
-          geom.position.z = 0;
+        Object.entries(this.geometries).forEach(function([key, geom]) {
+          console.log(geom)
+          geom.scale.x = geom.line.scale.x = 1;
+          geom.scale.z = geom.line.scale.z = 1;
+          geom.scale.y = geom.line.scale.y = 1;
+          geom.position.x = geom.line.position.x = 0;
+          geom.position.y = geom.line.position.y = 0;
+          geom.position.z = geom.line.position.z = 0;
         });
       },
     };
@@ -440,6 +447,7 @@ class Viz {
 
     if (isAnimating) {
       this.geometries[this.activeGeometry].rotation[axis] += speed;
+      this.geometries[this.activeGeometry].line.rotation[axis] += speed;
     }
   }
 }
