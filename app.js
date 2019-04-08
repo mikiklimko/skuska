@@ -15,7 +15,7 @@ let parameters = {
   ani3: false,
   speed: 0.001,
   xro: false,
-  opacity: 1
+  opacity: 1,
 };
 
 class Viz {
@@ -33,12 +33,7 @@ class Viz {
     this.spin = this.spin.bind(this);
 
     // Zakladne jadro programu, ktore nastavi prostredie
-    this.camera = new THREE.PerspectiveCamera(
-      90,
-      window.innerWidth / window.innerHeight,
-      0.01,
-      1000
-    );
+    this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.01, 1000);
     // oddialenie kamery (aby bolo vidno objekty pred nou)
     this.camera.position.z = 15;
     this.camera.position.y = 1.5;
@@ -57,10 +52,7 @@ class Viz {
 
     document.body.appendChild(this.renderer.domElement);
 
-    this.controls = new THREE.OrbitControls(
-      this.camera,
-      this.renderer.domElement
-    );
+    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableZoom = true;
     this.controls.enablePan = true;
     this.controls.enableDamping = true;
@@ -70,10 +62,7 @@ class Viz {
     // this.renderer.vr.enabled = false;
 
     var room;
-    room = new THREE.LineSegments(
-      new THREE.BoxLineGeometry(40, 40, 40, 10, 10, 10),
-      new THREE.LineBasicMaterial({ color: 0x808080 })
-    );
+    room = new THREE.LineSegments(new THREE.BoxLineGeometry(40, 40, 40, 10, 10, 10), new THREE.LineBasicMaterial({ color: 0x808080 }));
     room.position.y = 3;
     this.scene.add(room);
 
@@ -85,7 +74,7 @@ class Viz {
       octahedron: null,
       ico: null,
       tetra: null,
-      poly: null
+      poly: null,
     };
 
     // Kym nemame inicializovane ziadne geometrie, ziadna teda nemoze byt aktivna
@@ -126,17 +115,7 @@ class Viz {
 
   initGUI() {
     this.gui = new dat.GUI();
-    this.typ = this.gui
-      .add(parameters, "tvar", [
-        "Kocka",
-        "Ihlan",
-        "Valec",
-        "Tetrahedron",
-        "Polyhedron",
-        "Octahedron",
-        "Icoshedron"
-      ])
-      .name("Objekt");
+    this.typ = this.gui.add(parameters, "tvar", ["Kocka", "Ihlan", "Valec", "Tetrahedron", "Polyhedron", "Octahedron", "Icoshedron"]).name("Objekt");
     // Zmena parametru Objekt ("Kocka", "Ihlan" alebo "Valec") bude rovno
     // zavolana ako atribut `geometryType` metodou this.setActive(geometryType)
     this.typ.onChange(this.setActive);
@@ -160,9 +139,7 @@ class Viz {
 
     this.color = this.gui.addColor(parameters, "color").name("Farba");
     this.color.onChange(color => {
-      this.geometries[this.activeGeometry].material.color.setHex(
-        color.replace("#", "0x")
-      );
+      this.geometries[this.activeGeometry].material.color.setHex(color.replace("#", "0x"));
     });
 
     var dimen = this.gui.addFolder("Nastavenia");
@@ -187,7 +164,6 @@ class Viz {
 
     xdimen.onChange(pohyb => {
       this.geometries[this.activeGeometry].scale.x = pohyb;
-      console.log(pohyb);
     });
     ydimen.onChange(pohyb => {
       this.geometries[this.activeGeometry].scale.y = pohyb;
@@ -261,7 +237,7 @@ class Viz {
           geom.position.y = 0;
           geom.position.z = 0;
         });
-      }
+      },
     };
 
     this.gui.add(restartOptions, "restart");
@@ -274,11 +250,15 @@ class Viz {
     var material = new THREE.MeshPhongMaterial({
       color: "#ff0000",
       wireframe: true,
-      transparent: true
+      transparent: true,
     });
 
     this.geometries.cube = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.cube);
+
+    var edges = new THREE.EdgesGeometry(geometry);
+    this.geometries.cube.line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+    this.scene.add(this.geometries.cube.line);
   }
 
   initCone() {
@@ -286,11 +266,15 @@ class Viz {
     var material = new THREE.MeshPhongMaterial({
       color: "red",
       wireframe: true,
-      transparent: true
+      transparent: true,
     });
 
     this.geometries.cone = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.cone);
+
+    var edges = new THREE.EdgesGeometry(geometry);
+    this.geometries.cone.line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+    this.scene.add(this.geometries.cone.line);
   }
 
   initCylinder() {
@@ -298,33 +282,45 @@ class Viz {
     var material = new THREE.MeshPhongMaterial({
       color: "red",
       wireframe: true,
-      transparent: true
+      transparent: true,
     });
 
     this.geometries.cylinder = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.cylinder);
+
+    var edges = new THREE.EdgesGeometry(geometry);
+    this.geometries.cylinder.line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+    this.scene.add(this.geometries.cylinder.line);
   }
   initOctahedron() {
     var geometry = new THREE.OctahedronBufferGeometry(3, 0);
     var material = new THREE.MeshPhongMaterial({
       color: "red",
       wireframe: true,
-      transparent: true
+      transparent: true,
     });
 
     this.geometries.octahedron = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.octahedron);
+
+    var edges = new THREE.EdgesGeometry(geometry);
+    this.geometries.octahedron.line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+    this.scene.add(this.geometries.octahedron.line);
   }
   initIco() {
     var geometry = new THREE.IcosahedronBufferGeometry(6, 0);
     var material = new THREE.MeshPhongMaterial({
       color: "red",
       wireframe: true,
-      transparent: true
+      transparent: true,
     });
 
     this.geometries.ico = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.ico);
+
+    var edges = new THREE.EdgesGeometry(geometry);
+    this.geometries.ico.line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+    this.scene.add(this.geometries.ico.line);
   }
 
   initTetra() {
@@ -332,166 +328,107 @@ class Viz {
     var material = new THREE.MeshPhongMaterial({
       color: "red",
       wireframe: true,
-      transparent: true
+      transparent: true,
     });
 
     this.geometries.tetra = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.tetra);
+
+    var edges = new THREE.EdgesGeometry(geometry);
+    this.geometries.tetra.line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+    this.scene.add(this.geometries.tetra.line);
   }
 
   initPoly() {
-    var verticesOfCube = [
-      -1,
-      -1,
-      -1,
-      1,
-      -1,
-      -1,
-      1,
-      1,
-      -1,
-      -1,
-      1,
-      -1,
-      -1,
-      -1,
-      1,
-      1,
-      -1,
-      1,
-      1,
-      1,
-      1,
-      -1,
-      1,
-      1
-    ];
+    var verticesOfCube = [-1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1];
 
-    var indicesOfFaces = [
-      2,
-      1,
-      0,
-      0,
-      3,
-      2,
-      0,
-      4,
-      7,
-      7,
-      3,
-      0,
-      0,
-      1,
-      5,
-      5,
-      4,
-      0,
-      1,
-      2,
-      6,
-      6,
-      5,
-      1,
-      2,
-      3,
-      7,
-      7,
-      6,
-      2,
-      4,
-      5,
-      6,
-      6,
-      7,
-      4
-    ];
+    var indicesOfFaces = [2, 1, 0, 0, 3, 2, 0, 4, 7, 7, 3, 0, 0, 1, 5, 5, 4, 0, 1, 2, 6, 6, 5, 1, 2, 3, 7, 7, 6, 2, 4, 5, 6, 6, 7, 4];
 
-    var geometry = new THREE.PolyhedronBufferGeometry(
-      verticesOfCube,
-      indicesOfFaces,
-      6,
-      2
-    );
+    var geometry = new THREE.PolyhedronBufferGeometry(verticesOfCube, indicesOfFaces, 6, 2);
     var material = new THREE.MeshPhongMaterial({
       color: "red",
       wireframe: true,
-      transparent: true
+      transparent: true,
     });
 
     this.geometries.poly = new THREE.Mesh(geometry, material);
     this.scene.add(this.geometries.poly);
+
+    var edges = new THREE.EdgesGeometry(geometry);
+    this.geometries.poly.line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+    this.scene.add(this.geometries.poly.line);
   }
 
   setActive(geometryType) {
     switch (geometryType) {
       case "Ihlan":
-        this.geometries.poly.visible = false;
-        this.geometries.tetra.visible = false;
-        this.geometries.ico.visible = false;
-        this.geometries.octahedron.visible = false;
-        this.geometries.cube.visible = false;
-        this.geometries.cone.visible = true;
-        this.geometries.cylinder.visible = false;
+        this.geometries.poly.visible = this.geometries.poly.line.visible = false;
+        this.geometries.tetra.visible = this.geometries.tetra.line.visible = false;
+        this.geometries.ico.visible = this.geometries.ico.line.visible = false;
+        this.geometries.octahedron.visible = this.geometries.octahedron.line.visible = false;
+        this.geometries.cube.visible = this.geometries.cube.line.visible = false;
+        this.geometries.cone.visible = this.geometries.cone.line.visible = true;
+        this.geometries.cylinder.visible = this.geometries.cylinder.line.visible = false;
         this.activeGeometry = "cone";
         break;
       case "Valec":
-        this.geometries.poly.visible = false;
-        this.geometries.tetra.visible = false;
-        this.geometries.ico.visible = false;
-        this.geometries.octahedron.visible = false;
-        this.geometries.cube.visible = false;
-        this.geometries.cone.visible = false;
-        this.geometries.cylinder.visible = true;
+        this.geometries.poly.visible = this.geometries.poly.line.visible = false;
+        this.geometries.tetra.visible = this.geometries.tetra.line.visible = false;
+        this.geometries.ico.visible = this.geometries.ico.line.visible = false;
+        this.geometries.octahedron.visible = this.geometries.octahedron.line.visible = false;
+        this.geometries.cube.visible = this.geometries.cube.line.visible = false;
+        this.geometries.cone.visible = this.geometries.cone.line.visible = false;
+        this.geometries.cylinder.visible = this.geometries.cylinder.line.visible = true;
         this.activeGeometry = "cylinder";
         break;
       case "Octahedron":
-        this.geometries.poly.visible = false;
-        this.geometries.tetra.visible = false;
-        this.geometries.ico.visible = false;
-        this.geometries.octahedron.visible = true;
-        this.geometries.cube.visible = false;
-        this.geometries.cone.visible = false;
-        this.geometries.cylinder.visible = false;
+        this.geometries.poly.visible = this.geometries.poly.line.visible = false;
+        this.geometries.tetra.visible = this.geometries.tetra.line.visible = false;
+        this.geometries.ico.visible = this.geometries.ico.line.visible = false;
+        this.geometries.octahedron.visible = this.geometries.octahedron.line.visible = true;
+        this.geometries.cube.visible = this.geometries.cube.line.visible = false;
+        this.geometries.cone.visible = this.geometries.cone.line.visible = false;
+        this.geometries.cylinder.visible = this.geometries.cylinder.line.visible = false;
         this.activeGeometry = "octahedron";
         break;
       case "Icoshedron":
-        this.geometries.poly.visible = false;
-        this.geometries.tetra.visible = false;
-        this.geometries.ico.visible = true;
-        this.geometries.octahedron.visible = false;
-        this.geometries.cube.visible = false;
-        this.geometries.cone.visible = false;
-        this.geometries.cylinder.visible = false;
+        this.geometries.poly.visible = this.geometries.poly.line.visible = false;
+        this.geometries.tetra.visible = this.geometries.tetra.line.visible = false;
+        this.geometries.ico.visible = this.geometries.ico.line.visible = true;
+        this.geometries.octahedron.visible = this.geometries.octahedron.line.visible = false;
+        this.geometries.cube.visible = this.geometries.cube.line.visible = false;
+        this.geometries.cone.visible = this.geometries.cone.line.visible = false;
+        this.geometries.cylinder.visible = this.geometries.cylinder.line.visible = false;
         this.activeGeometry = "ico";
         break;
       case "Tetrahedron":
-        this.geometries.poly.visible = false;
-        this.geometries.tetra.visible = true;
-        this.geometries.ico.visible = false;
-        this.geometries.octahedron.visible = false;
-        this.geometries.cube.visible = false;
-        this.geometries.cone.visible = false;
-        this.geometries.cylinder.visible = false;
+        this.geometries.poly.visible = this.geometries.poly.line.visible = false;
+        this.geometries.tetra.visible = this.geometries.tetra.line.visible = true;
+        this.geometries.ico.visible = this.geometries.ico.line.visible = false;
+        this.geometries.octahedron.visible = this.geometries.octahedron.line.visible = false;
+        this.geometries.cube.visible = this.geometries.cube.line.visible = false;
+        this.geometries.cone.visible = this.geometries.cone.line.visible = false;
+        this.geometries.cylinder.visible = this.geometries.cylinder.line.visible = false;
         this.activeGeometry = "tetra";
         break;
       case "Polyhedron":
-        this.geometries.poly.visible = true;
-        this.geometries.tetra.visible = false;
-        this.geometries.ico.visible = false;
-        this.geometries.octahedron.visible = false;
-        this.geometries.cube.visible = false;
-        this.geometries.cone.visible = false;
-        this.geometries.cylinder.visible = false;
+        this.geometries.poly.visible = this.geometries.poly.line.visible = true;
+        this.geometries.tetra.visible = this.geometries.tetra.line.visible = false;
+        this.geometries.ico.visible = this.geometries.ico.line.visible = false;
+        this.geometries.octahedron.visible = this.geometries.octahedron.line.visible = false;
+        this.geometries.cube.visible = this.geometries.cube.line.visible = false;
+        this.geometries.cone.visible = this.geometries.cone.line.visible = false;
+        this.geometries.cylinder.visible = this.geometries.cylinder.line.visible = false;
         this.activeGeometry = "poly";
         break;
       default:
-        this.geometries.poly.visible = false;
-        this.geometries.tetra.visible = false;
-        this.geometries.ico.visible = false;
-        this.geometries.octahedron.visible = false;
-        this.geometries.cube.visible = true;
-        this.geometries.cone.visible = false;
-        this.geometries.cylinder.visible = false;
+        this.geometries.poly.visible = this.geometries.poly.line.visible = false;
+        this.geometries.tetra.visible = this.geometries.tetra.line.visible = false;
+        this.geometries.ico.visible = this.geometries.ico.line.visible = false;
+        this.geometries.octahedron.visible = this.geometries.octahedron.line.visible = false;
+        this.geometries.cube.visible = this.geometries.cube.line.visible = true;
+        this.geometries.cone.visible = this.geometries.cone.line.visible = false;
+        this.geometries.cylinder.visible = this.geometries.cylinder.line.visible = false;
         this.activeGeometry = "cube";
         break;
     }
