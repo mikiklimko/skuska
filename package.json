@@ -1,5 +1,5 @@
 {
-  "name": "bakalarka",
+  "name": "bakalarska-praca",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/mikiklimko/skuska.git"
   },
-  "author": "",
+  "author": "Mikulas Klimko",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/mikiklimko/skuska/issues"
