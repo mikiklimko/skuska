@@ -7,7 +7,7 @@ let parameters = {
   x: 1,
   y: 1,
   z: 1,
-  color: "#ff0000",
+  color: "#f78b11",
   wireframe: true,
   poz1: 1,
   poz2: 1,
