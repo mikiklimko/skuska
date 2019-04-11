@@ -27,9 +27,8 @@ let parameters = {
   xMax: 10,
   yMin: -10,
   yMax: 10,
-  zMin: -10,
-  zMax: 10,
   segments: 20,
+  functionVisible: false
 };
 
 // custom global variables
@@ -55,12 +54,8 @@ var a = 0.01,
 
 var meshFunction;
 var segments = 20,
-  xMin = -10,
-  xMax = 10,
-  xRange = xMax - xMin,
-  yMin = -10,
-  yMax = 10,
-  yRange = yMax - yMin,
+  xRange = parameters.xMax - parameters.xMin,
+  yRange = parameters.yMax - parameters.yMin,
   zMin = -10,
   zMax = 10,
   zRange = zMax - zMin;
@@ -400,6 +395,11 @@ class Viz {
     this.gui.add(restartOptions, "restart");
 
     // Parametricke rovnice
+    var functionVisible = this.gui.add(parameters, "functionVisible").name("Zobrazit funkciu");
+    functionVisible.onChange(checked => {
+      graphMesh.visible = checked
+    });
+
     gui_zText = this.gui.add(parameters, "zFuncText").name("f(x,y) = ");
     gui_xMin = this.gui.add(parameters, "xMin").name("x Minimum = ");
     gui_xMax = this.gui.add(parameters, "xMax").name("x Maximum = ");
@@ -681,15 +681,15 @@ class Viz {
   }
 
   createGraph() {
-    xRange = xMax - xMin;
-    yRange = yMax - yMin;
+    xRange = parameters.xMax - parameters.xMin;
+    yRange = parameters.yMax - parameters.yMin;
     zFunc = math.parse(parameters.zFuncText);
 
     var compiledFunc = zFunc.compile();
 
     function meshFunction(x, y, target) {
-      x = xRange * x + xMin;
-      y = yRange * y + yMin;
+      x = xRange * x + parameters.xMin;
+      y = yRange * y + parameters.yMin;
       var z = compiledFunc.eval({
         x,
         y,
@@ -703,7 +703,7 @@ class Viz {
       else return target.set(x, z, y);
     }
 
-    // true => sensible image tile repeat...
+    // rekurzivne aplikujeme `meshFunction`
     graphGeometry = new THREE.ParametricGeometry(
       meshFunction,
       parameters.segments,
@@ -711,13 +711,13 @@ class Viz {
       true
     );
 
-    // calculate vertex colors based on Z values
+    // Vypocitat hodnoty farieb na zaklade Z-ovej suradnice
     graphGeometry.computeBoundingBox();
     zMin = graphGeometry.boundingBox.min.z;
     zMax = graphGeometry.boundingBox.max.z;
     zRange = zMax - zMin;
     var color, point, face, numberOfSides, vertexIndex;
-    // faces are indexed using characters
+    // Hrany su indexovane pomocou pismen a, b, c, d
     var faceIndices = ["a", "b", "c", "d"];
     // first, assign colors to vertices as desired
     for (var i = 0; i < graphGeometry.vertices.length; i++) {
@@ -742,18 +742,18 @@ class Viz {
 
     if (graphMesh) {
       this.scene.remove(graphMesh);
-      // renderer.deallocateObject( graphMesh );
     }
 
     wireMaterial.map.repeat.set(parameters.segments, parameters.segments);
 
     graphMesh = new THREE.Mesh(graphGeometry, wireMaterial);
     graphMesh.doubleSided = true;
+    graphMesh.visible = parameters.functionVisible;
     this.scene.add(graphMesh);
   }
 
   preset01() {
-    gui_zText.setValue("sin(sqrt(a*x^2  + b*y^2))");
+    gui_zText.setValue("a*x^2 + b*y^2");
     gui_xMin.setValue(-10);
     gui_xMax.setValue(10);
     gui_yMin.setValue(-10);
