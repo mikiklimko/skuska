@@ -1,7 +1,7 @@
 {
   "name": "bakalarska-praca",
   "version": "1.0.0",
-  "description": "",
+  "description": "vizualizacia matematickych objektov",
   "main": "app.js",
   "scripts": {
     "start": "serve .",
@@ -13,9 +13,7 @@
     
   },
   "keywords": [
-    "VR",
-    "Math"
-  ],
+    "VR","Math"],
   "author": "Mikulas Klimko",
   "license": "ISC",
   "bugs": {
