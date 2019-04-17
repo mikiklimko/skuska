@@ -135,7 +135,7 @@ class Viz {
     this.controls.rotateSpeed = -0.25;
 
     document.body.appendChild(WEBVR.createButton(this.camera, this.renderer));
-      // vytvorenie zobrazenia osi 
+    // vytvorenie zobrazenia osi 
     const createAxis = (type, color, length) => {
       console.log(typeof color !== "string");
       if (
@@ -449,7 +449,7 @@ class Viz {
 
     // Zmena parametrov
     var gui_parameters = this.gui.addFolder("Parametre rovnice");
-    
+
 
     gui_a = gui_parameters
       .add(parameters, "a")
