@@ -10,10 +10,11 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mikiklimko/skuska.git"
-    
   },
   "keywords": [
-    "VR","Math"],
+    "VR",
+    "Math"
+  ],
   "author": "Mikulas Klimko",
   "license": "ISC",
   "bugs": {

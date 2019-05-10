@@ -33,7 +33,7 @@ let parameters = {
   functionopacity: 1
 };
 
-// Globalne premenne 
+// Globalne premenne
 var gui,
   gui_zText,
   gui_xMin,
@@ -85,6 +85,8 @@ var vertexColorMaterial = new THREE.MeshBasicMaterial({
   vertexColors: THREE.VertexColors,
 });
 
+let lastActiveGeometry = "cube";
+
 class Viz {
   constructor() {
     // Inicializacia v konštruktore
@@ -135,7 +137,7 @@ class Viz {
     this.controls.rotateSpeed = -0.25;
 
     document.body.appendChild(WEBVR.createButton(this.camera, this.renderer));
-    // vytvorenie zobrazenia osi 
+    // vytvorenie zobrazenia osi
     const createAxis = (type, color, length) => {
       console.log(typeof color !== "string");
       if (
@@ -243,7 +245,7 @@ class Viz {
     this.initSphere();
 
     // Na zaciatku bude aktivna kocka
-    this.setActive("Kocka");
+    this.setActive("cube");
 
     parameters.graphFunc = this.createGraph;
 
@@ -258,7 +260,7 @@ class Viz {
     this.typ = this.gui
       .add(parameters, "tvar", [
         "Kocka",
-        "Kváder",
+        "Kvader",
         "Ihlan",
         "Valec",
         "Gula",
@@ -269,7 +271,37 @@ class Viz {
       .name("Objekt");
     // Zmena parametru Objekt ("Kocka", "Ihlan" alebo "Valec") bude rovno
     // zavolana ako atribut `geometryType` metodou this.setActive(geometryType)
-    this.typ.onChange(this.setActive);
+    this.typ.onChange(typ => {
+      switch(typ) {
+        case "Kocka":
+          this.setActive("cube")
+          break;
+        case "Kvader":
+          this.setActive("kvad")
+          break;
+        case "Ihlan":
+          this.setActive("cone")
+          break;
+        case "Valec":
+          this.setActive("cylinder")
+          break;
+        case "Gula":
+          this.setActive("sphere")
+          break;
+        case "Tetrahedron":
+          this.setActive("tetra")
+          break;
+        case "Octahedron":
+          this.setActive("octahedron")
+          break;
+        case "Icosahedron":
+          this.setActive("ico")
+          break;
+        default:
+          this.setActive("cube")
+          break;
+      }
+    });
 
     this.wireframe = this.gui.add(parameters, "wireframe").name("Wireframe");
     this.wireframe.onChange(checked => {
@@ -387,9 +419,8 @@ class Viz {
       restart: () => {
         this.camera.position.z = 15;
 
-        // nastav vsetkym geometriam zakladne nastavenia 
+        // nastav vsetkym geometriam zakladne nastavenia
         Object.entries(this.geometries).forEach(function ([key, geom]) {
-          console.log(geom);
           geom.scale.x = geom.line.scale.x = 1;
           geom.scale.z = geom.line.scale.z = 1;
           geom.scale.y = geom.line.scale.y = 1;
@@ -407,10 +438,11 @@ class Viz {
     functionVisible.onChange(checked => {
       graphMesh.visible = checked
       if (checked) {
+        lastActiveGeometry = this.activeGeometry
         this.setActive("none")
       }
       else {
-        this.setActive("cube")
+        this.setActive(lastActiveGeometry)
       }
 
     });
@@ -425,9 +457,6 @@ class Viz {
         this.setActive(this.activeGeometry)
       }
       graphMesh.visible = checked;
-
-
-
     });
 
     gui_zText = this.gui.add(parameters, "zFuncText").name("f(x,y) = ");
@@ -660,9 +689,9 @@ class Viz {
         this.geometries.cone.visible = this.geometries.cone.line.visible = false;
         this.geometries.cylinder.visible = this.geometries.cylinder.line.visible = false;
         this.geometries.sphere.visible = this.geometries.sphere.line.visible = false;
-        this.activeGeometry = "cube";
+        this.activeGeometry = "none";
         break;
-      case "Ihlan":
+      case "cone":
         this.geometries.kvad.visible = this.geometries.kvad.line.visible = false;
         this.geometries.tetra.visible = this.geometries.tetra.line.visible = false;
         this.geometries.ico.visible = this.geometries.ico.line.visible = false;
@@ -673,7 +702,7 @@ class Viz {
         this.geometries.sphere.visible = this.geometries.sphere.line.visible = false;
         this.activeGeometry = "cone";
         break;
-      case "Gula":
+      case "sphere":
         this.geometries.sphere.visible = this.geometries.sphere.line.visible = true;
         this.geometries.kvad.visible = this.geometries.kvad.line.visible = false;
         this.geometries.tetra.visible = this.geometries.tetra.line.visible = false;
@@ -684,7 +713,7 @@ class Viz {
         this.geometries.cylinder.visible = this.geometries.cylinder.line.visible = false;
         this.activeGeometry = "sphere";
         break;
-      case "Valec":
+      case "cylinder":
         this.geometries.kvad.visible = this.geometries.kvad.line.visible = false;
         this.geometries.tetra.visible = this.geometries.tetra.line.visible = false;
         this.geometries.ico.visible = this.geometries.ico.line.visible = false;
@@ -695,7 +724,7 @@ class Viz {
         this.geometries.sphere.visible = this.geometries.sphere.line.visible = false;
         this.activeGeometry = "cylinder";
         break;
-      case "Octahedron":
+      case "octahedron":
         this.geometries.kvad.visible = this.geometries.kvad.line.visible = false;
         this.geometries.tetra.visible = this.geometries.tetra.line.visible = false;
         this.geometries.ico.visible = this.geometries.ico.line.visible = false;
@@ -706,7 +735,7 @@ class Viz {
         this.geometries.sphere.visible = this.geometries.sphere.line.visible = false;
         this.activeGeometry = "octahedron";
         break;
-      case "Icosahedron":
+      case "ico":
         this.geometries.kvad.visible = this.geometries.kvad.line.visible = false;
         this.geometries.tetra.visible = this.geometries.tetra.line.visible = false;
         this.geometries.ico.visible = this.geometries.ico.line.visible = true;
@@ -717,7 +746,7 @@ class Viz {
         this.geometries.sphere.visible = this.geometries.sphere.line.visible = false;
         this.activeGeometry = "ico";
         break;
-      case "Tetrahedron":
+      case "tetra":
         this.geometries.kvad.visible = this.geometries.kvad.line.visible = false;
         this.geometries.tetra.visible = this.geometries.tetra.line.visible = true;
         this.geometries.ico.visible = this.geometries.ico.line.visible = false;
@@ -728,7 +757,7 @@ class Viz {
         this.geometries.sphere.visible = this.geometries.sphere.line.visible = false;
         this.activeGeometry = "tetra";
         break;
-      case "Kvader":
+      case "kvad":
         this.geometries.kvad.visible = this.geometries.kvad.line.visible = true;
         this.geometries.tetra.visible = this.geometries.tetra.line.visible = false;
         this.geometries.ico.visible = this.geometries.ico.line.visible = false;
@@ -802,7 +831,7 @@ class Viz {
     var color, point, face, numberOfSides, vertexIndex;
     // Hrany su indexovane pomocou pismen a, b, c, d
     var faceIndices = ["a", "b", "c", "d"];
-    //Nastavenie farieb 
+    //Nastavenie farieb
     for (var i = 0; i < graphGeometry.vertices.length; i++) {
       point = graphGeometry.vertices[i];
       color = new THREE.Color(0x0000ff);
@@ -829,7 +858,7 @@ class Viz {
 
     graphMesh = new THREE.Mesh(graphGeometry, wireMaterial);
     graphMesh.doubleSided = true;
-    graphMesh.visible = parameters.functionVisible;
+    graphMesh.visible = parameters.functionaobjectVisible || parameters.functionVisible;
     this.scene.add(graphMesh);
   }
 
